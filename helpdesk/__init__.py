@@ -39,13 +39,14 @@ def create_app():
     app.jinja_env.globals["role_labels"] = ROLE_LABELS
 
     # Each part of the app is a blueprint: a group of pages in its own file.
-    from . import articles, auth, customer, jobs, main, tickets
+    from . import articles, auth, customer, jobs, main, reports, tickets
     app.register_blueprint(auth.bp)
     app.register_blueprint(main.bp)
     app.register_blueprint(tickets.bp)
     app.register_blueprint(jobs.bp)
     app.register_blueprint(articles.bp)
     app.register_blueprint(customer.bp)
+    app.register_blueprint(reports.bp)
 
     # Make any tables that do not exist yet. Importing models first tells
     # SQLAlchemy which tables there are.

@@ -36,6 +36,9 @@
           {{ nav_link('tickets.new_request', 'Raise a request') }}
           {% endif %}
           {{ nav_link('kb.search', 'Knowledge base') }}
+          {% if g.user.role == "manager" %}
+          {{ nav_link('reports.index', 'Reports') }}
+          {% endif %}
           {% else %}
           {{ nav_link('main.home', 'Home') }}
           {{ nav_link('auth.signin', 'Sign in') }}
@@ -70,5 +73,8 @@
       <p>Netheret IT Support Solutions is a made-up company used for teaching.</p>
     </div>
   </footer>
+  {# Pages that need JavaScript add it here, at the end, so the page
+     content loads first. #}
+  {% block scripts %}{% endblock %}
 </body>
 </html>

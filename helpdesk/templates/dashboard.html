@@ -44,6 +44,7 @@
     <li><a href="{{ url_for('tickets.queue', assigned='none') }}">Requests nobody is working on</a></li>
     <li><a href="{{ url_for('tickets.queue', priority='critical') }}">Critical requests</a></li>
     <li><a href="{{ url_for('jobs.new_job') }}">Schedule an on-site job</a></li>
+    <li><a href="{{ url_for('reports.index') }}">Reports and KPIs</a></li>
     <li><a href="{{ url_for('tickets.new_request') }}">Log a request for a customer</a></li>
   </ul>
   {% endif %}

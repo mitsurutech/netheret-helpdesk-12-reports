@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}Reports{% endblock %}
+{% block content %}
+  <h1>Reports</h1>
+  <p>Worked out from the live data each time the page opens.</p>
+
+  <h2>Key numbers</h2>
+  <ul class="kpis">
+    <li><span class="kpi-number">{{ fcr }}%</span> of finished requests were fixed at Tier 1 (first-contact resolution)</li>
+    <li><span class="kpi-number">{{ older }}</span> open request{{ "" if older == 1 else "s" }} older than 2 working days</li>
+    <li><span class="kpi-number">{{ jobs_done }} of {{ jobs_total }}</span> on-site jobs this week done</li>
+    <li><span class="kpi-number">{{ past_done }}%</span> of jobs due to have finished are marked done</li>
+  </ul>
+
+  {# Each table below has class "chart". charts.js draws a bar chart above
+     it from the first two columns. The table stays, so the numbers can be
+     read by screen readers and by anybody who prefers a table. #}
+  <section aria-labelledby="open-heading">
+    <h2 id="open-heading">Open requests by priority</h2>
+    <table class="chart">
+      <caption>Open requests by priority</caption>
+      <thead><tr><th scope="col">Priority</th><th scope="col">Open requests</th></tr></thead>
+      <tbody>
+        {% for priority, count in open_by_priority %}
+        <tr><th scope="row">{{ priority|capitalize }}</th><td>{{ count }}</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </section>
+
+  <section aria-labelledby="resolve-heading">
+    <h2 id="resolve-heading">Average time to resolve</h2>
+    <table class="chart" data-unit="h">
+      <caption>Average hours from raised to resolved, by priority</caption>
+      <thead><tr><th scope="col">Priority</th><th scope="col">Average hours</th></tr></thead>
+      <tbody>
+        {% for priority, hours in hours_to_resolve %}
+        <tr><th scope="row">{{ priority|capitalize }}</th><td>{{ hours }}</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </section>
+
+  <section aria-labelledby="people-heading">
+    <h2 id="people-heading">Requests per member of staff</h2>
+    <table class="chart">
+      <caption>Requests assigned to each member of staff</caption>
+      <thead><tr><th scope="col">Name</th><th scope="col">All requests</th><th scope="col">Still open</th></tr></thead>
+      <tbody>
+        {% for name, total, opened in per_person %}
+        <tr><th scope="row">{{ name }}</th><td>{{ total }}</td><td>{{ opened }}</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </section>
+
+  <section aria-labelledby="kb-heading">
+    <h2 id="kb-heading">Most helpful knowledge base articles</h2>
+    <table class="chart">
+      <caption>Times each article was marked helpful</caption>
+      <thead><tr><th scope="col">Article</th><th scope="col">Marked helpful</th></tr></thead>
+      <tbody>
+        {% for title, count in articles %}
+        <tr><th scope="row">{{ title }}</th><td>{{ count }}</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </section>
+{% endblock %}
+
+{% block scripts %}
+  <script src="{{ url_for('static', filename='js/charts.js') }}"></script>
+{% endblock %}

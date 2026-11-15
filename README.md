@@ -1,20 +1,25 @@
-# Netheret help desk, step 11: customer view
+# Netheret help desk, step 12: reports
 
 A teaching example. Over sixteen steps we build a help desk web app for
 Netheret, a made-up company that supports the IT of small businesses. This
-step finishes the customer's side: they can track their company's requests,
-follow the progress on a timeline and add comments.
+step gives managers a reports page: KPIs worked out with SQL queries, and
+bar charts drawn with plain JavaScript.
 
 ## What this step adds
 
-- `helpdesk/customer.py`, a new blueprint for customers only:
-  - `/my/requests`: the company's requests, still open, finished or all;
-  - `/my/requests/<id>`: one request with its timeline, showing only the
-    updates staff marked "the customer can see this";
-  - `/my/requests/<id>/comments`: the customer's reply. A reply to a
-    request that was waiting or resolved opens it again.
-- The customer dashboard lists the company's open requests.
-- After raising a request, a link to follow its progress.
+- `helpdesk/reports.py`: one small function per KPI:
+  - open requests by priority;
+  - average hours to resolve, by priority;
+  - requests per member of staff, in total and still open;
+  - first-contact resolution: the share of finished requests Tier 1 fixed
+    without escalating;
+  - open requests older than 2 working days;
+  - on-site jobs done this week, and the share of past jobs marked done;
+  - the most helpful knowledge base articles.
+- `helpdesk/templates/reports.html`: the key numbers, then a table for each
+  KPI.
+- `helpdesk/static/js/charts.js`: finds each `table.chart` and draws a bar
+  chart on a `<canvas>` above it, reading the numbers from the table.
 
 ## Run it
 
@@ -26,18 +31,20 @@ python seed.py
 flask --app helpdesk run --debug
 ```
 
-Sign in as `customer@brightwell.example` (demo password `password123`),
-open My requests and add a comment. Then sign in as `tier1@netheret.example`
-and open the same request: the comment is on the staff timeline too, along
-with internal notes the customer never saw.
+Sign in as `manager@netheret.example` (demo password `password123`) and
+open Reports. Resolve a request or mark a job done, then reload: the numbers
+change, because nothing is stored, everything is counted when the page opens.
 
 ## What to look at
 
-- `company_ticket_or_404()`: one function that every customer page uses to
-  load a request, so the "own company only" rule cannot be forgotten.
-- Try `/my/requests/2` as the Brightwell customer: request 2 belongs to
-  another company, so the answer is 404, not the request.
-- The timeline query filters on `visible_to_customer`, so internal notes are
-  never even sent to the template.
+- `func.count`, `func.avg` and `group_by`: the database does the counting,
+  rather than Python looping over every row.
+- `julianday()` is SQLite's own function: another database would need a
+  different way to subtract dates.
+- The chart is drawn from the table, so the two can never disagree. The
+  canvas has `aria-hidden="true"` because the table already says everything
+  for screen readers.
+- `devicePixelRatio`: the canvas is drawn at the screen's real resolution so
+  the text is not blurry.
 
 <!-- links -->
