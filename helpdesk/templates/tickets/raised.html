@@ -15,6 +15,9 @@
     <dt>Status</dt><dd>{{ ticket.status|capitalize }}</dd>
   </dl>
 
+  {% if g.user.role == "customer" %}
+  <p><a href="{{ url_for('customer.my_request', ticket_id=ticket.id) }}">Follow the progress of {{ ticket.reference }}</a></p>
+  {% endif %}
   <p><a href="{{ url_for('tickets.new_request') }}">Raise another request</a></p>
   {% if g.user.is_staff %}
   <p><a href="{{ url_for('tickets.detail', ticket_id=ticket.id) }}">Open {{ ticket.reference }}</a></p>

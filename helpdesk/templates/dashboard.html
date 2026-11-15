@@ -7,6 +7,21 @@
   {% if g.user.role == "customer" %}
   <p>Something not working? Tell us about it and we will help.</p>
   <p><a class="button" href="{{ url_for('tickets.new_request') }}">Raise a support request</a></p>
+
+  <h2>Your company's open requests</h2>
+  {% if open_tickets %}
+  <ul class="quick-links">
+    {% for ticket in open_tickets %}
+    <li>
+      <a href="{{ url_for('customer.my_request', ticket_id=ticket.id) }}">{{ ticket.reference }}: {{ ticket.title }}</a>
+      <span class="badge status-{{ ticket.status }}">{{ ticket.status|capitalize }}</span>
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p>None at the moment.</p>
+  {% endif %}
+  <p><a href="{{ url_for('customer.my_requests', show='all') }}">See all your requests</a></p>
   {% elif g.user.role == "tier1" %}
   <p>Triage new requests, fix what you can and escalate what you cannot.</p>
   <ul class="quick-links">

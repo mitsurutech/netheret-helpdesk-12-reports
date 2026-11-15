@@ -22,6 +22,9 @@
         <ul class="nav-list">
           {% if g.user %}
           {{ nav_link('main.dashboard', 'Dashboard') }}
+          {% if g.user.role == "customer" %}
+          {{ nav_link('customer.my_requests', 'My requests') }}
+          {% endif %}
           {% if g.user.is_staff %}
           {{ nav_link('tickets.queue', 'Queue') }}
           {{ nav_link('jobs.week', 'Jobs') }}

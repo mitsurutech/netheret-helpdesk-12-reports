@@ -2,6 +2,8 @@
 from flask import Blueprint, g, redirect, render_template, url_for
 
 from .auth import login_required
+from .extensions import db
+from .models import Ticket
 
 bp = Blueprint("main", __name__)
 
@@ -25,4 +27,12 @@ def home():
 @bp.route("/dashboard")
 @login_required
 def dashboard():
-    return render_template("dashboard.html", role_names=ROLE_NAMES)
+    open_tickets = []
+    if g.user.role == "customer":
+        open_tickets = db.session.scalars(
+            db.select(Ticket)
+            .where(Ticket.company_id == g.user.company_id,
+                   Ticket.status.in_(["new", "open", "waiting"]))
+            .order_by(Ticket.created_at.desc())
+        ).all()
+    return render_template("dashboard.html", role_names=ROLE_NAMES, open_tickets=open_tickets)

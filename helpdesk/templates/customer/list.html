@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}My requests{% endblock %}
+{% block content %}
+  <h1>{{ g.user.company.name }}: support requests</h1>
+  <p>Every request raised for your company, by you or a colleague.</p>
+
+  <nav class="week-nav" aria-label="Which requests">
+    <a href="{{ url_for('customer.my_requests', show='open') }}"{% if show == "open" %} aria-current="page"{% endif %}>Still open</a>
+    <a href="{{ url_for('customer.my_requests', show='finished') }}"{% if show == "finished" %} aria-current="page"{% endif %}>Resolved and closed</a>
+    <a href="{{ url_for('customer.my_requests', show='all') }}"{% if show == "all" %} aria-current="page"{% endif %}>All</a>
+    <a class="button" href="{{ url_for('tickets.new_request') }}">Raise a request</a>
+  </nav>
+
+  <div class="table-scroll">
+  <table>
+    <caption>{{ tickets|length }} request{{ "" if tickets|length == 1 else "s" }}</caption>
+    <thead>
+      <tr>
+        <th scope="col">Reference</th>
+        <th scope="col">Title</th>
+        <th scope="col">Status</th>
+        <th scope="col">Raised</th>
+        <th scope="col">Last updated</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for ticket in tickets %}
+      <tr>
+        <td><a href="{{ url_for('customer.my_request', ticket_id=ticket.id) }}">{{ ticket.reference }}</a></td>
+        <td>{{ ticket.title }}</td>
+        <td><span class="badge status-{{ ticket.status }}">{{ ticket.status|capitalize }}</span></td>
+        <td>{{ ticket.created_at|datetime }}</td>
+        <td>{{ ticket.updated_at|datetime }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="5">No requests here.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  </div>
+{% endblock %}
